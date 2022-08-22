@@ -18,19 +18,39 @@
  * Plugin strings are defined here.
  *
  * @package     local_greetings
- * @category    string
  * @copyright   2022 Michael Ken H. Revil <mkhrevil@outlook.com>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$string['pluginname'] = 'Greetings';
+function local_greetings_get_greeting($user) {
+    if ($user == null) {
+        return get_string('greetinguser', 'local_greetings');
+    }
 
-$string['greetinguser'] = 'Greetings, user.';
-$string['greetingloggedinuser'] = 'Greetings, {$a}.';
-$string['greetinguserau'] = 'Hello, {$a}.';
-$string['greetinguseres'] = 'Hola, {$a}.';
-$string['greetinguserfj'] = 'Bula, {$a}.';
-$string['greetingusernz'] = 'Kia Ora, {$a}.';
-$string['greetinguserph'] = 'Kumusta, {$a}.';
+    $country = $user->country;
+
+    switch ($country) {
+        case 'AU':
+            $langstr = 'greetinguserau';
+            break;
+        case 'ES':
+            $langstr = 'greetinguseres';
+            break;
+        case 'FJ':
+            $langstr = 'greetinguserfj';
+            break;
+        case 'NZ':
+            $langstr = 'greetingusernz';
+            break;
+        case 'PH':
+            $langstr = 'greetinguserph';
+            break;
+        default:
+            $langstr = 'greetingloggedinuser';
+            break;
+    }
+
+    return get_string($langstr, 'local_greetings', fullname($user));
+}
