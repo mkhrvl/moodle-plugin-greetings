@@ -24,6 +24,12 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Displays localised greeting to user depending on the country on their profile.
+ *
+ * @param $user User currently logged in.
+ */
+
 function local_greetings_get_greeting($user) {
     if ($user == null) {
         return get_string('greetinguser', 'local_greetings');
@@ -53,4 +59,41 @@ function local_greetings_get_greeting($user) {
     }
 
     return get_string($langstr, 'local_greetings', fullname($user));
+}
+
+/**
+ * Insert a link to index.php on the site front page navigation menu.
+ *
+ * @param navigation_node $frontpage Node representing the front page in the navigation tree.
+ */
+
+function local_greetings_extend_navigation_frontpage(navigation_node $frontpage) {
+    $frontpage->add(
+        get_string('pluginname', 'local_greetings'),
+        new moodle_url('/local/greetings/index.php'),
+        navigation_node::TYPE_CUSTOM,
+        null,
+        null,
+        new pix_icon('t/message', '')
+    );
+}
+
+/**
+ * Create a custom node for local_greetings plugin on the site.
+ *
+ * @param global_navigation $root Global node on the site.
+ */
+
+function local_greetings_extend_navigation(global_navigation $root) {
+    $node = navigation_node::create(
+        get_string('pluginname', 'local_greetings'),
+        new moodle_url('/local/greetings/index.php'),
+        navigation_node::TYPE_CUSTOM,
+        null,
+        null,
+        new pix_icon('t/message', '')
+    );
+
+    $node->showinflatnavigation = true;
+    $root->add_node($node);
 }
