@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
- * User made functions are defined here.
+ * Library of functions for local_greetings.
  *
  * @package     local_greetings
  * @copyright   2022 Michael Ken H. Revil <mkhrevil@outlook.com>
@@ -61,39 +61,44 @@ function local_greetings_get_greeting($user) {
     return get_string($langstr, 'local_greetings', fullname($user));
 }
 
-/**
- * Insert a link to index.php on the site front page navigation menu.
- *
- * @param navigation_node $frontpage Node representing the front page in the navigation tree.
- */
+if (!isguestuser() && isloggedin()) {
 
-function local_greetings_extend_navigation_frontpage(navigation_node $frontpage) {
-    $frontpage->add(
-        get_string('pluginname', 'local_greetings'),
-        new moodle_url('/local/greetings/index.php'),
-        navigation_node::TYPE_CUSTOM,
-        null,
-        null,
-        new pix_icon('t/message', '')
-    );
+    /**
+     * Insert a link to index.php on the site front page navigation menu.
+     *
+     * @param navigation_node $frontpage Node representing the front page in the navigation tree.
+     */
+
+    function local_greetings_extend_navigation_frontpage(navigation_node $frontpage) {
+        $frontpage->add(
+            get_string('pluginname', 'local_greetings'),
+            new moodle_url('/local/greetings/index.php'),
+            navigation_node::TYPE_CUSTOM,
+            null,
+            null,
+            new pix_icon('t/message', '')
+        );
+    }
+
+    /**
+     * Create a custom node for local_greetings plugin on the site.
+     *
+     * @param global_navigation $root Global node on the site.
+     */
+
+    function local_greetings_extend_navigation(global_navigation $root) {
+        $node = navigation_node::create(
+            get_string('pluginname', 'local_greetings'),
+            new moodle_url('/local/greetings/index.php'),
+            navigation_node::TYPE_CUSTOM,
+            null,
+            null,
+            new pix_icon('t/message', '')
+        );
+
+        $node->showinflatnavigation = true;
+        $root->add_node($node);
+    }
 }
 
-/**
- * Create a custom node for local_greetings plugin on the site.
- *
- * @param global_navigation $root Global node on the site.
- */
 
-function local_greetings_extend_navigation(global_navigation $root) {
-    $node = navigation_node::create(
-        get_string('pluginname', 'local_greetings'),
-        new moodle_url('/local/greetings/index.php'),
-        navigation_node::TYPE_CUSTOM,
-        null,
-        null,
-        new pix_icon('t/message', '')
-    );
-
-    $node->showinflatnavigation = true;
-    $root->add_node($node);
-}
