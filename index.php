@@ -41,23 +41,32 @@ if (isguestuser()) {
 
 $allowpost = has_capability('local/greetings:postmessages', $context);
 $deleteanypost = has_capability('local/greetings:deleteanymessage', $context);
+$deleteownpost = has_capability('local/greetings:deleteownmessage', $context);
 
 $action = optional_param('action', '', PARAM_TEXT);
 
 if ($action == 'del') {
+    require_sesskey();
+
     $id = required_param('id', PARAM_TEXT);
 
-    if ($deleteanypost) {
+    if ($deleteanypost || $deleteownpost) {
         $params = array('id' => $id);
 
+        // Users without permission should only delete their own post.
+        if (!$deleteanypost) {
+            $params += ['userid' => $USER->id];
+        }
+
         $DB->delete_records('local_greetings_messages', $params);
+
+        redirect($PAGE->url);
     }
 }
 
 $messageform = new local_greetings_message_form();
 
 if ($data = $messageform->get_data()) {
-
     require_capability('local/greetings:postmessages', $context);
 
     $message = required_param('message', PARAM_TEXT);
@@ -109,12 +118,12 @@ if ($allowview) {
         echo html_writer::tag('small', userdate($m->timecreated), array('class' => 'text-muted'));
         echo html_writer::end_tag('p');
 
-        if ($deleteanypost) {
+        if ($deleteanypost || ($deleteownpost && $m->userid == $USER->id)) {
             echo html_writer::start_tag('p', array('class' => 'card-footer text-center'));
             echo html_writer::link(
                 new moodle_url(
                     '/local/greetings/index.php',
-                    array('action' => 'del', 'id' => $m->id)
+                    array('action' => 'del', 'id' => $m->id, 'sesskey' => sesskey())
                 ),
                 $OUTPUT->pix_icon('t/delete', '') . get_string('delete')
             );
