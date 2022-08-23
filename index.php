@@ -86,7 +86,8 @@ if ($allowpost) {
 
 $allowview = has_capability('local/greetings:viewmessages', $context);
 
-if($allowview) {
+if ($allowview) {
+
     $userfields = \core_user\fields::for_name()->with_identity($context);
     $userfieldssql = $userfields->get_sql('u');
 

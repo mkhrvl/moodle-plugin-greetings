@@ -15,6 +15,7 @@
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
 
 /**
+ * Capabilities are defined here.
  *
  * @package     local_greetings
  * @copyright   2022 Michael Ken H. Revil <mkhrevil@outlook.com>
