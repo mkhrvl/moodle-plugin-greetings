@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die();
  * Displays localised greeting to user depending on the country on their profile.
  *
  * @param $user User currently logged in.
+ * @return string
  */
 
 function local_greetings_get_greeting($user) {
@@ -70,14 +71,16 @@ if (!isguestuser() && isloggedin()) {
      */
 
     function local_greetings_extend_navigation_frontpage(navigation_node $frontpage) {
-        $frontpage->add(
-            get_string('pluginname', 'local_greetings'),
-            new moodle_url('/local/greetings/index.php'),
-            navigation_node::TYPE_CUSTOM,
-            null,
-            null,
-            new pix_icon('t/message', '')
-        );
+        if (get_config('local_greetings', 'showinnavigation')) {
+            $frontpage->add(
+                get_string('pluginname', 'local_greetings'),
+                new moodle_url('/local/greetings/index.php'),
+                navigation_node::TYPE_CUSTOM,
+                null,
+                null,
+                new pix_icon('t/message', '')
+            );
+        }
     }
 
     /**
@@ -96,7 +99,7 @@ if (!isguestuser() && isloggedin()) {
             new pix_icon('t/message', '')
         );
 
-        $node->showinflatnavigation = true;
+        $node->showinflatnavigation = get_config('local_greetings', 'showinnavigation');
         $root->add_node($node);
     }
 }
