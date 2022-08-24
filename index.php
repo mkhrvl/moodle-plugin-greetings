@@ -22,9 +22,9 @@
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once('../../config.php');
-require_once($CFG->dirroot. '/local/greetings/lib.php');
-require_once($CFG->dirroot. '/local/greetings/message_form.php');
+require_once(__DIR__ . '/../../config.php');
+require_once(__DIR__ . '/lib.php');
+require_once(__DIR__ . '/message_form.php');
 
 $context = context_system::instance();
 $PAGE->set_context($context);
@@ -120,12 +120,23 @@ if ($allowview) {
 
         if ($deleteanypost || ($deleteownpost && $m->userid == $USER->id)) {
             echo html_writer::start_tag('p', array('class' => 'card-footer text-center'));
+
+            echo html_writer::link(
+                new moodle_url(
+                    '/local/greetings/edit.php',
+                    array('action' => 'edit', 'id' => $m->id, 'sesskey' => sesskey())
+                ),
+                $OUTPUT->pix_icon('t/editstring', ''),
+                array('role' => 'button', 'aria-label' => get_string('edit'), 'title' => get_string('edit')),
+            );
+
             echo html_writer::link(
                 new moodle_url(
                     '/local/greetings/index.php',
                     array('action' => 'del', 'id' => $m->id, 'sesskey' => sesskey())
                 ),
-                $OUTPUT->pix_icon('t/delete', '') . get_string('delete')
+                $OUTPUT->pix_icon('t/delete', ''),
+                array('role' => 'button', 'aria-label' => get_string('delete'), 'title' => get_string('delete'))
             );
             echo html_writer::end_tag('p');
         }

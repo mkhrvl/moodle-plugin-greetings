@@ -13,30 +13,34 @@
 //
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <https://www.gnu.org/licenses/>.
+//
+// Source code by Michael Pound with some minor modifications.
 
 /**
- * Greetings plugin setting.
+ * Form extension for greeting messages edit form.
  *
  * @package     local_greetings
- * @copyright   2022 Michael Ken H. Revil <mkhrevil@outlook.com>
+ * @copyright   2022 Michael Pound <michael@brickfieldlabs.ie>
  * @license     https://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die;
+defined('MOODLE_INTERNAL') || die();
 
-if ($hassiteconfig) {
-    $settings = new admin_settingpage('local_greetings', get_string('pluginname', 'local_greetings'));
-    $ADMIN->add('localplugins', $settings);
+require_once($CFG->libdir . '/formslib.php');
 
-    if ($ADMIN->fulltree) {
-        require_once($CFG->dirroot . '/local/greetings/lib.php');
+class local_greetings_edit_form extends moodleform {
 
-        $settings->add(new admin_setting_configcheckbox(
-            'local_greetings/showinnavigation',
-            get_string('showinnavigation', 'local_greetings'),
-            get_string('showinnavigationdesc', 'local_greetings'),
-            '1',
-        ));
+    /**
+     * Define the form.
+     */
+    public function definition() {
+
+        $mform = $this->_form;
+
+        $mform->addElement('textarea', 'newmessage', get_string('editmessage', 'local_greetings'));
+        $mform->setType('newmessage', PARAM_TEXT);
+        $mform->setDefault('newmessage',  $this->_customdata['message']);
+
+        $this->add_action_buttons(true); // Adds 'Save Changes' and 'Cancel' buttons.
     }
 }
-
